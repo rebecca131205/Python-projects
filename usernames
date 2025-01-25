@@ -1,0 +1,36 @@
+import random
+
+adjectives = ["Cool", "Happy", "Fast", "Bright", "Smart"]
+nouns = ["Tiger", "Dragon", "Eagle", "Wolf", "Phoenix"]
+
+def make_username(add_number=False, add_symbol=False):
+    word1 = random.choice(adjectives) 
+    word2 = random.choice(nouns)      
+    username = word1 + word2          
+    
+    if add_number:
+        username += str(random.randint(0, 999)) 
+    if add_symbol:
+        username += random.choice(["!", "@", "#", "$"])  
+    return username
+
+print("Welcome to the Username Maker!")
+count = int(input("How many usernames would you like to make? "))
+use_numbers = input("Do you want numbers in the usernames? (yes/no): ").lower() == "yes"
+use_symbols = input("Do you want symbols in the usernames? (yes/no): ").lower() == "yes"
+
+usernames = []
+for _ in range(count):
+    usernames.append(make_username(use_numbers, use_symbols))
+
+print("\nHere are your usernames:")
+for name in usernames:
+    print(name)
+
+save = input("\nDo you want to save the usernames to a file? (yes/no): ").lower()
+if save == "yes":
+    with open("usernames.txt", "w") as file:
+        for name in usernames:
+            file.write(name + "\n")
+    print("Usernames saved to 'usernames.txt'.")
+
