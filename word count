@@ -1,0 +1,11 @@
+def count_words(text):
+    words = text.split()
+    return len(words)
+
+user_input = input("Enter a sentence or paragraph: ").strip()
+
+if user_input:
+    word_count = count_words(user_input)
+    print(f"Word count: {word_count}")
+else:
+    print("Error: No input provided.")
