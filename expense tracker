@@ -1,0 +1,89 @@
+import json
+import os
+from datetime import datetime
+
+EXPENSE_FILE = "expenses.json"
+
+def load_expenses():
+    if os.path.exists(EXPENSE_FILE):
+        with open(EXPENSE_FILE, "r") as file:
+            try:
+                return json.load(file)
+            except json.JSONDecodeError:
+                return []
+    return []
+
+
+def save_expenses(expenses):
+    with open(EXPENSE_FILE, "w") as file:
+        json.dump(expenses, file, indent=4)
+
+
+def add_expense():
+    try:
+        amount = float(input("Enter amount spent: "))
+        category = input("Enter category (Food, Transport, etc.): ").strip()
+        description = input("Enter description: ").strip()
+
+        expense = {
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "amount": amount,
+            "category": category,
+            "description": description
+        }
+
+        expenses = load_expenses()
+        expenses.append(expense)
+        save_expenses(expenses)
+        print("Expense added successfully!")
+
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+
+def show_summary():
+    expenses = load_expenses()
+    if not expenses:
+        print("No expenses recorded yet.")
+        return
+
+    monthly_total = {}
+    category_total = {}
+
+    for exp in expenses:
+        month = exp["date"][:7]  # YYYY-MM format
+        category = exp["category"]
+
+        monthly_total[month] = monthly_total.get(month, 0) + exp["amount"]
+        category_total[category] = category_total.get(category, 0) + exp["amount"]
+
+    print("\nMonthly Summary:")
+    for month, total in monthly_total.items():
+        print(f"{month}: ${total:.2f}")
+
+    print("\nCategory-wise Summary:")
+    for cat, total in category_total.items():
+        print(f"{cat}: ${total:.2f}")
+
+
+def main():
+    while True:
+        print("\nExpense Tracker Menu")
+        print("1. Add Expense")
+        print("2. View Summary")
+        print("3. Exit")
+
+        choice = input("Choose an option: ").strip()
+
+        if choice == "1":
+            add_expense()
+        elif choice == "2":
+            show_summary()
+        elif choice == "3":
+            print("Exiting... Have a great day!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
